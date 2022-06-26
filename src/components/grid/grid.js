@@ -64,9 +64,11 @@ setDisplayFilterOptions(!displayFilterOptions)
   useEffect(() => {
 
     const fetchedList = localStorage.getItem('fake-list')
+    const fetchedHistoryList = localStorage.getItem('history-list')
     const paredList = JSON.parse(fetchedList)
+    const paredHistoryList = JSON.parse(fetchedHistoryList)
     if (paredList?.list) {
-        console.log('has list')
+        setHistory(paredHistoryList)
         setRowData(paredList.list)
         return
     } else {
@@ -76,6 +78,7 @@ setDisplayFilterOptions(!displayFilterOptions)
             action: null
         }
          localStorage.setItem("fake-list", JSON.stringify(g));
+         setHistory(paredHistoryList)
           setRowData(originalList);
         }
   }, []);
@@ -109,8 +112,10 @@ const bookmarded = (x) => {
     console.log(ip)
     setAction(`all traffic to :${ip}`)
     let x = originalList.filter((data) => data.Destination === ip);
-    let j = history
+    let j = history || []
     j.push({id: ip, action: 'to'})
+ 
+    localStorage.setItem("history-list", JSON.stringify(j));
     setHistory(j)
     let g = {
         list: x,
@@ -127,6 +132,7 @@ const bookmarded = (x) => {
     let x = originalList.filter((data) => data.Source === ip);
     let j = history
     j.push({id: ip, action: 'from'})
+    localStorage.setItem("history-list", JSON.stringify(j));
     setHistory(j)
     let g = {
         list: x,
@@ -158,7 +164,7 @@ const bookmarded = (x) => {
      <div className="w-ful flex flex-col h-20 test">
         <button onClick={() => reset()}>rest ip addresses </button>
         <div className="w-full">
-            { history.length >= 1 &&  history.map((x,index) => {
+            { history?.length >= 1 &&  history.map((x,index) => {
                 return (
                     <>
                     <button onClick={() => bookmarded(x)}>{index}: {x.id} </button>
