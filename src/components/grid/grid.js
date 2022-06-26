@@ -5,13 +5,16 @@ import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine-dark.css";
 import Axios from "axios";
 import data from "../../data/traffic_bytes.json";
+import History from '../history'
 
 import React, { useState, useEffect, useMemo } from "react";
 
-const Grid = () => {
+const Grid = ({action, setAction}) => {
   const [rowData, setRowData] = useState([]);
   const [ipToFilter, setIpToFilter] = useState("");
+  const [history, setHistory] = useState([]);
   const [displayFilterOptions, setDisplayFilterOptions] = useState(false);
+  
   // const [rowData, setRowData] = useState ([
   //     {Source: 'ford', Destination: 'focus', total_bytes: 40000 },
   //     {Source: 'caddy', Destination: 'xts', total_bytes: 50000 },
@@ -46,6 +49,7 @@ const props = {
     });
     return datalist;
   };
+  const originalList = mapData()
 
   const cellClickedListener = (e) => {
 console.log('clicked' ,e)
@@ -53,18 +57,42 @@ setIpToFilter(e.value)
 setDisplayFilterOptions(!displayFilterOptions)
   }
 
+  const reset = () => {
+    setRowData(originalList);
+  }
+
   useEffect(() => {
-    setRowData(mapData());
+    setRowData(originalList);
   }, []);
+
+const bookmarded = (x) => {
+    console.log(x)
+    if (x.action === 'to') {
+        console.log('in here')
+        setAction(`all traffic to :${x.id}`)
+        let l = originalList.filter((data) => data.Destination === x.id);
+        setRowData(l)
+    }
+}
 
   const trafficToAddress = (ip) => {
     console.log(ip)
-    setRowData((data) => data.filter((data) => data.Destination === ip))
+    setAction(`all traffic to :${ip}`)
+    let x = rowData.filter((data) => data.Destination === ip);
+    let j = history
+    j.push({id: ip, action: 'to'})
+    setHistory(j)
+    setRowData(x)
+    setDisplayFilterOptions(!displayFilterOptions)
+    // setRowData((data) => data.filter((data) => data.Destination === ip))
   }
 
   const trafficFromAddress = (ip) => {
     console.log(ip)
-    setRowData((data) => data.filter((data) => data.Source === ip))
+    setAction(`all traffic from :${ip}`)
+    setDisplayFilterOptions(!displayFilterOptions)
+    let x = rowData.filter((data) => data.Destination === ip);
+    setRowData(x)
   }
 
   return (
@@ -85,7 +113,18 @@ setDisplayFilterOptions(!displayFilterOptions)
         //  className="ag-theme-alpine-dark">
         className="ag-theme-balham"
       >
-     
+     <div className="w-ful flex flex-col h-20 test">
+        <button onClick={() => reset()}>rest ip addresses </button>
+        <div className="w-full">
+            { history.length >= 1 &&  history.map((x,index) => {
+                return (
+                    <>
+                    <button onClick={() => bookmarded(x)}>{index}: {x.id} </button>
+                    </>
+                )
+            })}
+        </div>
+     </div>
         <AgGridReact
         onCellClicked={cellClickedListener}
         rowData={rowData}
