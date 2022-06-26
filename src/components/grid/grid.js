@@ -15,10 +15,15 @@ const Grid = () => {
   //     {Source: 'caddy', Destination: 'xts', total_bytes: 50000 },
   //     {Source: 'lambo', Destination: 'aventy', total_bytes: 60000 },
   // ]);
+const props = {
+    sortable: true,
+    filter: true
+}
+
   const [columnDefs, setColumnDefs] = useState([
-    { field: "Source" },
-    { field: "Destination" },
-    { field: "total_bytes" },
+    { field: "Source", ...props},
+    { field: "Destination", ...props },
+    { field: "total_bytes", ...props },
   ]);
 
   const mapData = () => {
@@ -32,6 +37,10 @@ const Grid = () => {
     });
     return datalist;
   };
+
+  const cellClickedListener = (e) => {
+console.log('clicked' ,e)
+  }
 
   useEffect(() => {
     setRowData(mapData());
@@ -47,7 +56,11 @@ const Grid = () => {
         //  className="ag-theme-alpine-dark">
         className="ag-theme-balham"
       >
-        <AgGridReact rowData={rowData} columnDefs={columnDefs} />
+        <AgGridReact
+        onCellClicked={cellClickedListener}
+        rowData={rowData}
+        animateRows={true}
+        columnDefs={columnDefs} />
       </div>
     </>
   );
