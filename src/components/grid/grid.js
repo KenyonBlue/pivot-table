@@ -62,37 +62,79 @@ setDisplayFilterOptions(!displayFilterOptions)
   }
 
   useEffect(() => {
-    setRowData(originalList);
+
+    const fetchedList = localStorage.getItem('fake-list')
+    const paredList = JSON.parse(fetchedList)
+    if (paredList?.list) {
+        console.log('has list')
+        setRowData(paredList.list)
+        return
+    } else {
+         console.log('creating list')
+         let g = {
+            list: originalList,
+            action: null
+        }
+         localStorage.setItem("fake-list", JSON.stringify(g));
+          setRowData(originalList);
+        }
   }, []);
 
 const bookmarded = (x) => {
     console.log(x)
     if (x.action === 'to') {
-        console.log('in here')
         setAction(`all traffic to :${x.id}`)
-        let l = originalList.filter((data) => data.Destination === x.id);
-        setRowData(l)
+        let filteredDestinationList = originalList.filter((data) => data.Destination === x.id);
+        let g = {
+            list: filteredDestinationList,
+            action: 'to'
+        }
+        localStorage.setItem("fake-list",JSON.stringify(g));
+        setRowData(filteredDestinationList)
+        return 
+    } else {
+        setAction(`all traffic from :${x.id}`)
+        let filteredSourceList = originalList.filter((data) => data.Source === x.id);
+        let g = {
+            list: filteredSourceList,
+            action: 'from'
+        }
+        localStorage.setItem("fake-list",JSON.stringify(g));
+        setRowData(filteredSourceList)
+        return 
     }
 }
 
   const trafficToAddress = (ip) => {
     console.log(ip)
     setAction(`all traffic to :${ip}`)
-    let x = rowData.filter((data) => data.Destination === ip);
+    let x = originalList.filter((data) => data.Destination === ip);
     let j = history
     j.push({id: ip, action: 'to'})
     setHistory(j)
+    let g = {
+        list: x,
+        action: 'to'
+    }
+    localStorage.setItem("fake-list",JSON.stringify(g));
     setRowData(x)
     setDisplayFilterOptions(!displayFilterOptions)
-    // setRowData((data) => data.filter((data) => data.Destination === ip))
   }
 
   const trafficFromAddress = (ip) => {
     console.log(ip)
     setAction(`all traffic from :${ip}`)
-    setDisplayFilterOptions(!displayFilterOptions)
-    let x = rowData.filter((data) => data.Destination === ip);
+    let x = originalList.filter((data) => data.Source === ip);
+    let j = history
+    j.push({id: ip, action: 'from'})
+    setHistory(j)
+    let g = {
+        list: x,
+        action: 'from'
+    }
+    localStorage.setItem("fake-list",JSON.stringify(g));
     setRowData(x)
+    setDisplayFilterOptions(!displayFilterOptions)
   }
 
   return (
