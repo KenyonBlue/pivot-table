@@ -9,7 +9,7 @@ import History from "../history";
 
 import React, { useState, useEffect, useMemo } from "react";
 
-const Grid = ({ action, setAction }) => {
+const Grid = ({ action, setAction, children }) => {
   const [rowData, setRowData] = useState([]);
   const [ipToFilter, setIpToFilter] = useState("");
   const [history, setHistory] = useState([]);
@@ -157,7 +157,7 @@ const Grid = ({ action, setAction }) => {
   return (
     <>
       {displayFilterOptions && (
-        <div className="flex flex-col items-center absolute z-100 top-40 test w-80 py-4 min-h-20 bg-WHITE shadow-md rounded-md">
+        <div className="flex flex-col items-center absolute z-100 top-40 shadow-lg w-80 py-4 min-h-20 bg-WHITE shadow-md rounded-md">
           <div className="mt-1"> {ipToFilter} </div>
           <div className="w-full flex justify-around px-2 mt-2">
             <button
@@ -177,32 +177,43 @@ const Grid = ({ action, setAction }) => {
           </div>
         </div>
       )}
-      <div
-        style={{
-          height: "500px",
-          width: "600px",
-        }}
-        //  className="ag-theme-alpine-dark">
-        className="ag-theme-balham"
-      >
-        <div className="w-ful flex flex-col h-20 test">
-            <div className="flex w-full justify-between">
-          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40" onClick={() => reset()}>reset IP addresses </button>
-          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40" onClick={() => clearHistory()}>clear history </button>
+              <div className="w-full flex flex-col shadow-lg py-4 items-center">
+            <div className="flex w-full justify-between container-max px-4">
+          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40 hover:bg-BLACK hover:text-WHITE" onClick={() => reset()}>reset IP addresses </button>
+          {children}
+          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40 hover:bg-BLACK hover:text-WHITE" onClick={() => clearHistory()}>clear history </button>
             </div>
-          <div className="w-full">
+      
+        </div>
+      <div className="w-full flex px-4 flex-row-reverse justify-between container-max">
+      <div className="w-1/5 text-right">
+        <div className="w-full capitalize underline text-xl"> history</div>
             {history?.length >= 1 &&
               history.map((x, index) => {
                 return (
                   <>
-                    <button onClick={() => bookmarded(x)}>
-                      {index}: {x.id}{" "}
+                    <button className="capitalize" onClick={() => bookmarded(x)}>
+                      {x.action}: <span className="text-sm text-GREY hover:text-RED">{x.id}</span>
                     </button>
                   </>
                 );
               })}
           </div>
-        </div>
+      <div
+        style={{
+        height: "708px",
+        width: "600px",
+        }}
+        //  className="ag-theme-alpine-dark w-4/5">
+        className="ag-theme-balham w-4/5"
+      >
+        {/* <div className="w-ful flex flex-col shadow-lg py-4">
+            <div className="flex w-full justify-between">
+          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40" onClick={() => reset()}>reset IP addresses </button>
+          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40" onClick={() => clearHistory()}>clear history </button>
+            </div>
+      
+        </div> */}
         <AgGridReact
           onCellClicked={cellClickedListener}
           rowData={rowData}
@@ -211,6 +222,7 @@ const Grid = ({ action, setAction }) => {
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
         />
+      </div>
       </div>
     </>
   );

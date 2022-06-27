@@ -7,5 +7,9 @@
     .test {
       border: 1px solid red;
     }
+
+    .container-max {
+      max-width: 1440px
+    }
   }
 }
