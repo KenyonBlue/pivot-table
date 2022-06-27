@@ -1,12 +1,16 @@
 import Grid from "./components/grid/grid";
+import './App.css'
+import { useState } from "react";
 
 function App() {
+  const [ action, setAction ] = useState('current action')
   return (
-    <div >
-      <h1 className="text-3xl font-bold underline">
-        Hello world
+    <div className="w-screen flex flex-col  items-center min-h-screen">
+      <Grid action={action} setAction={setAction}>
+      <h1 className="text-3xl  underline capitalize">
+        { action }
       </h1>
-      <Grid/>
+      </Grid>
     </div>
   );
 }
