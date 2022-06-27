@@ -82,6 +82,8 @@ module.exports = {
   },
   width: {
   px: "1px",
+  "chart": "300px",
+  "chartlg": "600px",
   "title": "800px",
   "5px": "5px",
   "8px": "8px",

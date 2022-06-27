@@ -61,6 +61,11 @@ const Grid = ({ action, setAction, children }) => {
   };
 
   const reset = () => {
+    let g = {
+        list: originalList,
+        action: null,
+      };
+      localStorage.setItem("fake-list", JSON.stringify(g));
     setRowData(originalList);
   };
 
@@ -73,7 +78,9 @@ const Grid = ({ action, setAction, children }) => {
     const fetchedList = localStorage.getItem("fake-list");
     const fetchedHistoryList = localStorage.getItem("history-list");
     const paredList = JSON.parse(fetchedList);
-    const paredHistoryList = fetchedHistoryList ?JSON.parse(fetchedHistoryList) : [];
+    const paredHistoryList = fetchedHistoryList
+      ? JSON.parse(fetchedHistoryList)
+      : [];
     if (paredList?.list) {
       setHistory(paredHistoryList);
       setRowData(paredList.list);
@@ -177,52 +184,57 @@ const Grid = ({ action, setAction, children }) => {
           </div>
         </div>
       )}
-              <div className="w-full flex flex-col shadow-lg py-4 items-center">
-            <div className="flex w-full justify-between container-max px-4">
-          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40 hover:bg-BLACK hover:text-WHITE" onClick={() => reset()}>reset IP addresses </button>
+      <div className="w-full flex flex-col shadow-lg py-4 items-center">
+        <div className="flex w-full justify-between container-max px-4 flex-col md:flex-row items-center">
+          <button
+            className="capitalize border border-BLACK rounded-md m-1 p-1 w-full md:w-40 hover:bg-BLACK hover:text-WHITE"
+            onClick={() => reset()}
+          >
+            reset IP addresses
+          </button>
           {children}
-          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40 hover:bg-BLACK hover:text-WHITE" onClick={() => clearHistory()}>clear history </button>
-            </div>
-      
+          <button
+            className="capitalize border border-BLACK rounded-md m-1 p-1 w-full md:w-40 hover:bg-BLACK hover:text-WHITE"
+            onClick={() => clearHistory()}
+          >
+            clear history{" "}
+          </button>
         </div>
-      <div className="w-full flex px-4 flex-row-reverse justify-between container-max">
-      <div className="w-1/5 text-right">
-        <div className="w-full capitalize underline text-xl"> history</div>
-            {history?.length >= 1 &&
-              history.map((x, index) => {
-                return (
-                  <>
-                    <button className="capitalize" onClick={() => bookmarded(x)}>
-                      {x.action}: <span className="text-sm text-GREY hover:text-RED">{x.id}</span>
-                    </button>
-                  </>
-                );
-              })}
-          </div>
-      <div
-        style={{
-        height: "708px",
-        width: "600px",
-        }}
-        //  className="ag-theme-alpine-dark w-4/5">
-        className="ag-theme-balham w-4/5"
-      >
-        {/* <div className="w-ful flex flex-col shadow-lg py-4">
-            <div className="flex w-full justify-between">
-          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40" onClick={() => reset()}>reset IP addresses </button>
-          <button className="capitalize border border-BLACK rounded-md m-1 p-1 w-40" onClick={() => clearHistory()}>clear history </button>
-            </div>
-      
-        </div> */}
-        <AgGridReact
-          onCellClicked={cellClickedListener}
-          rowData={rowData}
-          popupParent={document.body}
-          animateRows={true}
-          defaultColDef={defaultColDef}
-          columnDefs={columnDefs}
-        />
       </div>
+      <div className="w-full flex px-4 flex-col  md:flex-row-reverse justify-between container-max mt-4">
+        <div className="w-full md:w-1/5 text-right">
+          <div className="w-full capitalize underline text-xl font-light">
+            history
+          </div>
+          {history?.length >= 1 &&
+            history.map((x, index) => {
+              return (
+                <>
+                  <div className="w-full">
+                    <button
+                      className="capitalize"
+                      onClick={() => bookmarded(x)}
+                    >
+                      {x.action}:{" "}
+                      <span className="text-sm text-GREY hover:text-RED">
+                        {x.id}
+                      </span>
+                    </button>
+                  </div>
+                </>
+              );
+            })}
+        </div>
+        <div className="ag-theme-balham md:w-4/5  w-full h-720px">
+          <AgGridReact
+            onCellClicked={cellClickedListener}
+            rowData={rowData}
+            popupParent={document.body}
+            animateRows={true}
+            defaultColDef={defaultColDef}
+            columnDefs={columnDefs}
+          />
+        </div>
       </div>
     </>
   );
