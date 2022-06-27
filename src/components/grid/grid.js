@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
-// AgGrid Api
+
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine-dark.css";
-// Imported Mock Data
+
 import data from "../../data/traffic_bytes.json";
 import History from "../history";
 import OptionsModal from "../optionsModal";
@@ -77,41 +77,39 @@ const Grid = ({ setAction, children }) => {
       setRowData(paredList.list);
       return;
     } else {
-      console.log("creating list");
-      let g = {
+      let storageList = {
         list: originalList,
         action: null,
       };
-      localStorage.setItem("fake-list", JSON.stringify(g));
+      localStorage.setItem("fake-list", JSON.stringify(storageList));
       setHistory(paredHistoryList);
       setRowData(originalList);
     }
   }, []);
 
-  const bookmarded = (x) => {
-    console.log(x);
-    if (x.action === "to") {
-      setAction(`all traffic to :${x.id}`);
+  const bookmarded = (ip) => {
+    if (ip.action === "to") {
+      setAction(`all traffic to :${ip.id}`);
       let filteredDestinationList = originalList.filter(
-        (data) => data.Destination === x.id
+        (data) => data.Destination === ip.id
       );
-      let g = {
+      let destinationStorage = {
         list: filteredDestinationList,
         action: "to",
       };
-      localStorage.setItem("fake-list", JSON.stringify(g));
+      localStorage.setItem("fake-list", JSON.stringify(destinationStorage));
       setRowData(filteredDestinationList);
       return;
     } else {
-      setAction(`all traffic from :${x.id}`);
+      setAction(`all traffic from :${ip.id}`);
       let filteredSourceList = originalList.filter(
-        (data) => data.Source === x.id
+        (data) => data.Source === ip.id
       );
-      let g = {
+      let sourceStorage = {
         list: filteredSourceList,
         action: "from",
       };
-      localStorage.setItem("fake-list", JSON.stringify(g));
+      localStorage.setItem("fake-list", JSON.stringify(sourceStorage));
       setRowData(filteredSourceList);
       return;
     }
